@@ -11,20 +11,38 @@ import {
 } from "@nextui-org/react";
 import { EmployeeRecord } from './page';
 
-const hsaContributionLimit = {
-  self: 3850,
-  family: 7750,
+const planTypeFamily = "Family"
+const planTypeSelf = "Self-only"
+
+const hsaContributionLimitByPlanType = {
+  [planTypeSelf]: 3850,
+  [planTypeFamily]: 7750,
 }
 
-const hdhpMinimumDeductible = {
-  self: 1500,
-  family: 3000,
+const hdhpMinimumDeductibleByPlanType: { [planTypeFamily]: number, [planTypeSelf]: number } = {
+  [planTypeSelf]: 1500,
+  [planTypeFamily]: 3000,
 }
 
 const hsaCatchUpContributationAmount = 1000;
 
+function isAge55OrGreaterWithinCurrentYear(dob: string): boolean {
+  // Create a date object with the target's birthday.
+  const birthDateObject = new Date(dob);
+
+  // Get the current date for comparison.
+  const currentDate = new Date();
+
+  // Calculate the age.
+  const age = currentDate.getFullYear() - birthDateObject.getFullYear();
+
+  // Check if the person is already 55 years of age or older, or will turn 55 during the current year.
+  return age >= 55 || (currentDate.getMonth() >= birthDateObject.getMonth())
+}
+
 export default function HSATable({ records }: { records: EmployeeRecord[] }) {
   const hsaTableData = records.map(record => {
+    const { id } = record;
     const {
       Name: name,
       Deductible: deductible,
@@ -32,19 +50,25 @@ export default function HSATable({ records }: { records: EmployeeRecord[] }) {
     const planType = record.fields["Plan type"]
     const dob = record.fields["Date of birth"]
 
-    // const isHsaEligible = 
+    const isHsaEligible = deductible > hdhpMinimumDeductibleByPlanType[planType]
+    const hsaContributionLimit = hsaContributionLimitByPlanType[planType]
+
+    const hsaMaxContribution = isAge55OrGreaterWithinCurrentYear(dob) ? hsaCatchUpContributationAmount + hsaContributionLimit : hsaCatchUpContributationAmount
 
     return {
+      id,
       name,
       deductible,
       planType,
       dob,
+      isHsaEligible,
+      hsaMaxContribution,
     }
   });
 
 
   const [page, setPage] = React.useState(1);
-  const rowsPerPage = 5;
+  const rowsPerPage = 10;
 
   const pages = Math.ceil(records.length / rowsPerPage);
 
@@ -52,8 +76,8 @@ export default function HSATable({ records }: { records: EmployeeRecord[] }) {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
 
-    return records.slice(start, end);
-  }, [page, records]);
+    return hsaTableData.slice(start, end);
+  }, [page, hsaTableData]);
 
 
   return (
@@ -76,14 +100,18 @@ export default function HSATable({ records }: { records: EmployeeRecord[] }) {
         <TableColumn>DOB</TableColumn>
         <TableColumn>Plan Type</TableColumn>
         <TableColumn>Deductible</TableColumn>
+        <TableColumn>HSA Eligible</TableColumn>
+        <TableColumn>HSA Max Contribution</TableColumn>
       </TableHeader>
       <TableBody items={items}>
         {(item) => (
-          <TableRow>
-            <TableCell>{item.fields.Name}</TableCell>
-            <TableCell>{item.fields["Date of birth"]}</TableCell>
-            <TableCell>{item.fields["Plan type"]}</TableCell>
-            <TableCell>{`${item.fields.Deductible}`}</TableCell>
+          <TableRow key={item.id}>
+            <TableCell>{item.name}</TableCell>
+            <TableCell>{item.dob}</TableCell>
+            <TableCell>{item.planType}</TableCell>
+            <TableCell>{`${item.deductible}`}</TableCell>
+            <TableCell>{item.isHsaEligible ? "Yes" : "No"}</TableCell>
+            <TableCell>{item.isHsaEligible ? item.hsaMaxContribution : "NA"}</TableCell>
           </TableRow>)}
       </TableBody>
     </Table>)

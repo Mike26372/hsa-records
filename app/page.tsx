@@ -5,21 +5,24 @@ type Records = {
 }
 
 export type EmployeeRecord = {
-	id: String;
-	createdTime: String;
+	id: string;
+	createdTime: string;
 	fields: EmployeeFields
 }
 
+type PlanType = "Family" | "Self-only"
+
 type EmployeeFields = {
-	'Plan type': String;
-	Name: String;
-	Deductible: Number;
-	'Date of birth': String;
+	'Plan type': PlanType;
+	Name: string;
+	Deductible: number;
+	'Date of birth': string;
 }
 
 async function getEmployeeRecords(): Promise<Records | undefined> {
 	const res = await fetch('https://api.airtable.com/v0/appekA493GuXz8uDK/tbllLFdZDMfLjAT4N', {
 		headers: {
+			// TOOD: Allow this to be pased as env variable via flags.
 			"Authorization": "Bearer patawZWIa4hg1HinJ.260bae64187b68bb9e6de8c081b10a1d2f5b66e750839c84f616e978267ea31d",
 		},
 	})

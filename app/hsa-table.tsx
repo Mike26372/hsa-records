@@ -9,23 +9,24 @@ import {
   TableCell,
   Pagination,
 } from "@nextui-org/react";
-import { EmployeeRecord } from './page';
+import { EmployeeRecord, planTypeFamily, planTypeSelf } from './page';
 
-const planTypeFamily = "Family"
-const planTypeSelf = "Self-only"
-
+// Map of contributation limits by plan type.
 const hsaContributionLimitByPlanType = {
   [planTypeSelf]: 3850,
   [planTypeFamily]: 7750,
 }
 
+// Map of HDHP Minimum Deductible by plan type.
 const hdhpMinimumDeductibleByPlanType: { [planTypeFamily]: number, [planTypeSelf]: number } = {
   [planTypeSelf]: 1500,
   [planTypeFamily]: 3000,
 }
 
+// Catch up contribution amount for individuals of age 55 or older.
 const hsaCatchUpContributationAmount = 1000;
 
+// Calculates whether or not a person will be 55 years of age or older at any point within the current calendar year.
 function isAge55OrGreaterWithinCurrentYear(dob: string): boolean {
   // Create a date object with the target's birthday.
   const birthDateObject = new Date(dob);
@@ -40,27 +41,39 @@ function isAge55OrGreaterWithinCurrentYear(dob: string): boolean {
   return age >= 55 || (currentDate.getMonth() >= birthDateObject.getMonth())
 }
 
+// Create a formatter to format the dollar amounts.
+let USDollar = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+  maximumSignificantDigits: 2
+});
+
+const columnHeaders = ["Name", "DOB", "Plan Type", "Deductible", "HSA Eligible", "HSA Max Contribution"]
+
 export default function HSATable({ records }: { records: EmployeeRecord[] }) {
   const hsaTableData = records.map(record => {
+    // Collect all required information from the provided record.
     const { id } = record;
-    const {
-      Name: name,
-      Deductible: deductible,
-    } = record.fields
+    const { Name: name, Deductible: deductible } = record.fields
     const planType = record.fields["Plan type"]
-    const dob = record.fields["Date of birth"]
+    const dateOfBirthString = record.fields["Date of birth"]
 
+    // Format the date of birth.
+    const dateOfBirth = new Date(dateOfBirthString);
+    const dobFormatted = `${dateOfBirth.getMonth()}/${dateOfBirth.getDay()}/${dateOfBirth.getFullYear()}`
+
+    // Calculate if a user is HSA Eligible and their maximum contribution limit.
     const isHsaEligible = deductible > hdhpMinimumDeductibleByPlanType[planType]
-    const hsaContributionLimit = hsaContributionLimitByPlanType[planType]
 
-    const hsaMaxContribution = isAge55OrGreaterWithinCurrentYear(dob) ? hsaCatchUpContributationAmount + hsaContributionLimit : hsaCatchUpContributationAmount
+    const hsaContributionLimit = hsaContributionLimitByPlanType[planType]
+    const hsaMaxContribution = isAge55OrGreaterWithinCurrentYear(dateOfBirthString) ? hsaCatchUpContributationAmount + hsaContributionLimit : hsaCatchUpContributationAmount
 
     return {
       id,
       name,
       deductible,
       planType,
-      dob,
+      dobFormatted,
       isHsaEligible,
       hsaMaxContribution,
     }
@@ -79,7 +92,6 @@ export default function HSATable({ records }: { records: EmployeeRecord[] }) {
     return hsaTableData.slice(start, end);
   }, [page, hsaTableData]);
 
-
   return (
     <Table
       bottomContent={
@@ -96,22 +108,17 @@ export default function HSATable({ records }: { records: EmployeeRecord[] }) {
       }
     >
       <TableHeader>
-        <TableColumn>Name</TableColumn>
-        <TableColumn>DOB</TableColumn>
-        <TableColumn>Plan Type</TableColumn>
-        <TableColumn>Deductible</TableColumn>
-        <TableColumn>HSA Eligible</TableColumn>
-        <TableColumn>HSA Max Contribution</TableColumn>
+        {columnHeaders.map(column => <TableColumn>{column}</TableColumn>)}
       </TableHeader>
       <TableBody items={items}>
         {(item) => (
           <TableRow key={item.id}>
             <TableCell>{item.name}</TableCell>
-            <TableCell>{item.dob}</TableCell>
+            <TableCell>{item.dobFormatted}</TableCell>
             <TableCell>{item.planType}</TableCell>
-            <TableCell>{`${item.deductible}`}</TableCell>
+            <TableCell>{USDollar.format(item.deductible)}</TableCell>
             <TableCell>{item.isHsaEligible ? "Yes" : "No"}</TableCell>
-            <TableCell>{item.isHsaEligible ? item.hsaMaxContribution : "NA"}</TableCell>
+            <TableCell>{item.isHsaEligible ? USDollar.format(item.hsaMaxContribution) : "NA"}</TableCell>
           </TableRow>)}
       </TableBody>
     </Table>)

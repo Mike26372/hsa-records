@@ -10,7 +10,10 @@ export type EmployeeRecord = {
 	fields: EmployeeFields
 }
 
-type PlanType = "Family" | "Self-only"
+export const planTypeFamily = "Family"
+export const planTypeSelf = "Self-only"
+
+type PlanType = typeof planTypeFamily | typeof planTypeSelf
 
 type EmployeeFields = {
 	'Plan type': PlanType;

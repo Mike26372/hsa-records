@@ -49,6 +49,7 @@ In order to ensure this project is more production ready there are a few follow-
 First, I would make the component more modular for reuse and ensure it has the more typical suite of UI features required for properly displaying tables of data. These features could include:
 
 - Pagination that only fetches initial data and each subsequent page as you navigate
+- Loading icons and error handling for API failures
 - Allow sort and search within the table, where applicable
 - Add standard internationalization of currencies and dates based on the User's browser settings or current location
 - Mobile friendly viewing

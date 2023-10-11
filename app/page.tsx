@@ -27,7 +27,7 @@ async function getEmployeeRecords(): Promise<Records | undefined> {
 		headers: {
 			"Authorization": `Bearer ${process.env.AIRTABLE_API_KEY}`,
 		},
-	})
+	});
 
 	try {
 		return res.json()
@@ -37,10 +37,10 @@ async function getEmployeeRecords(): Promise<Records | undefined> {
 }
 
 export default async function Home() {
-	const employeeRecords = await getEmployeeRecords()
+	const employeeRecords = await getEmployeeRecords();
 
 	if (!employeeRecords) {
-		return null
+		return null;
 	}
 
 	return (

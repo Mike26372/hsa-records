@@ -50,6 +50,7 @@ First, I would make the component more modular for reuse and ensure it has the m
 - Allow sort and search within the table, where applicable
 - Add standard internationalization of currencies and dates based on the User's browser settings or current location
 - Mobile friendly viewing
+- Add accessibility related tags (aria-*)
 
 Second, I would want to confirm the app is optimized for the intial page load and make sure user's feel they're using a high quality app that provides data quickly and effectively. A few improvments to be made that would ensure this happens:
 - Optimize images and set up compression (G-Zip)

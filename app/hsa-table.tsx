@@ -54,26 +54,26 @@ export default function HSATable({ records }: { records: EmployeeRecord[] }) {
   const hsaTableData = records.map(record => {
     // Collect all required information from the provided record.
     const { id } = record;
-    const { Name: name, Deductible: deductible } = record.fields
-    const planType = record.fields["Plan type"]
-    const dateOfBirthString = record.fields["Date of birth"]
+    const { Name: name, Deductible: deductible } = record.fields;
+    const planType = record.fields["Plan type"];
+    const dateOfBirthString = record.fields["Date of birth"];
 
     // Format the date of birth.
     const dateOfBirth = new Date(dateOfBirthString);
     // Note: Need to recalculate date using the timezone offset to ensure the date is shown in the current timezone of the user.
-    const dateOfBirthCurrentTimezone = new Date(dateOfBirth.getTime() - dateOfBirth.getTimezoneOffset() * -60000)
-    const month = (dateOfBirthCurrentTimezone.getMonth() + 1).toString().padStart(2, "0")
-    const date = dateOfBirthCurrentTimezone.getDate().toString().padStart(2, "0")
-    const year = dateOfBirthCurrentTimezone.getFullYear().toString()
-    const dobFormatted = `${month}/${date}/${year}`
+    const dateOfBirthCurrentTimezone = new Date(dateOfBirth.getTime() - dateOfBirth.getTimezoneOffset() * -60000);
+    const month = (dateOfBirthCurrentTimezone.getMonth() + 1).toString().padStart(2, "0");
+    const date = dateOfBirthCurrentTimezone.getDate().toString().padStart(2, "0");
+    const year = dateOfBirthCurrentTimezone.getFullYear().toString();
+    const dobFormatted = `${month}/${date}/${year}`;
 
     // Calculate if a user is HSA Eligible and their maximum contribution limit.
-    const isHsaEligible = deductible > hdhpMinimumDeductibleByPlanType[planType]
+    const isHsaEligible = deductible > hdhpMinimumDeductibleByPlanType[planType];
 
     const hsaContributionLimit = hsaContributionLimitByPlanType[planType]
     const hsaMaxContribution = isAge55OrGreaterWithinCurrentYear(dateOfBirthString)
       ? hsaCatchUpContributationAmount + hsaContributionLimit
-      : hsaCatchUpContributationAmount
+      : hsaCatchUpContributationAmount;
 
     return {
       id,
@@ -83,7 +83,7 @@ export default function HSATable({ records }: { records: EmployeeRecord[] }) {
       dobFormatted,
       isHsaEligible,
       hsaMaxContribution,
-    }
+    };
   });
 
 
@@ -115,7 +115,7 @@ export default function HSATable({ records }: { records: EmployeeRecord[] }) {
       }
     >
       <TableHeader>
-        {columnHeaders.map(column => <TableColumn>{column}</TableColumn>)}
+        {columnHeaders.map(column => <TableColumn key={column}>{column}</TableColumn>)}
       </TableHeader>
       <TableBody items={items}>
         {(item) => (

@@ -33,10 +33,7 @@ const hsaCatchUpContributationAmount = 1000;
 
 
 // Calculates whether or not a person will be 55 years of age or older at any point within the current calendar year.
-function isAge55OrGreaterWithinCurrentYear(dob: string): boolean {
-  // Create a date object with the target's birthday.
-  const birthDate = new Date(dob);
-
+function isAge55OrGreaterWithinCurrentYear(birthDate: Date): boolean {
   // Get the current date for comparison.
   const currentDate = new Date();
 
@@ -96,7 +93,7 @@ export default function HSATable({ records }: { records: EmployeeRecord[] }) {
 
     const hsaContributionLimit = hsaContributionLimitByPlanType[planType];
     const hsaMaxContribution = isAge55OrGreaterWithinCurrentYear(
-      dateOfBirthString,
+      dateOfBirth,
     )
       ? hsaContributionLimit + hsaCatchUpContributationAmount
       : hsaContributionLimit;

@@ -60,7 +60,7 @@ export default function HSATable({ records }: { records: EmployeeRecord[] }) {
 
     // Format the date of birth.
     const dateOfBirth = new Date(dateOfBirthString);
-    // Recalculate date using the timezone offset to ensure the date is in the current timezone of the user.
+    // Note: Need to recalculate date using the timezone offset to ensure the date is shown in the current timezone of the user.
     const dateOfBirthCurrentTimezone = new Date(dateOfBirth.getTime() - dateOfBirth.getTimezoneOffset() * -60000)
     const month = (dateOfBirthCurrentTimezone.getMonth() + 1).toString().padStart(2, "0")
     const date = dateOfBirthCurrentTimezone.getDate().toString().padStart(2, "0")

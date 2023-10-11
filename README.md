@@ -1,6 +1,9 @@
-# Next.js & NextUI Template
+# HSA Eligibility Take Home Project
 
-This is a template for creating applications using Next.js 13 (app directory) and NextUI (v2).
+Completed by: 
+
+Michael Tutt
+tutt.michael@gmail.com
 
 ## Technologies Used
 
@@ -14,13 +17,12 @@ This is a template for creating applications using Next.js 13 (app directory) an
 
 ## How to Use
 
+### Setup API Key
 
-### Use the template with create-next-app
+Create an `.env.local` file in the root of your local version of the repository. Add the variable `AIRTABLE_API_KEY` with the associated key. Example below:
 
-To create a new project based on this template using `create-next-app`, run the following command:
-
-```bash
-npx create-next-app -e https://github.com/nextui-org/next-app-template
+```
+AIRTABLE_API_KEY=[YOUR_API_KEY]
 ```
 
 ### Install dependencies
@@ -35,6 +37,13 @@ npm install
 npm run dev
 ```
 
-## License
+### Navigate browser to local endpoint
 
-Licensed under the [MIT license](https://github.com/nextui-org/next-app-template/blob/main/LICENSE).
+Open localhost:3000 within your preferred browser (this project was tested using Chrome).
+
+## Getting Project Production Ready [TODO]
+
+- Internationalization
+- Optimized initial page load
+- Make component reusable / more modular
+- Improve mobile friendliness

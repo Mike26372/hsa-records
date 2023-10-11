@@ -60,13 +60,20 @@ export default function HSATable({ records }: { records: EmployeeRecord[] }) {
 
     // Format the date of birth.
     const dateOfBirth = new Date(dateOfBirthString);
-    const dobFormatted = `${dateOfBirth.getMonth()}/${dateOfBirth.getDay()}/${dateOfBirth.getFullYear()}`
+    // Recalculate date using the timezone offset to ensure the date is in the current timezone of the user.
+    const dateOfBirthCurrentTimezone = new Date(dateOfBirth.getTime() - dateOfBirth.getTimezoneOffset() * -60000)
+    const month = (dateOfBirthCurrentTimezone.getMonth() + 1).toString().padStart(2, "0")
+    const date = dateOfBirthCurrentTimezone.getDate().toString().padStart(2, "0")
+    const year = dateOfBirthCurrentTimezone.getFullYear().toString()
+    const dobFormatted = `${month}/${date}/${year}`
 
     // Calculate if a user is HSA Eligible and their maximum contribution limit.
     const isHsaEligible = deductible > hdhpMinimumDeductibleByPlanType[planType]
 
     const hsaContributionLimit = hsaContributionLimitByPlanType[planType]
-    const hsaMaxContribution = isAge55OrGreaterWithinCurrentYear(dateOfBirthString) ? hsaCatchUpContributationAmount + hsaContributionLimit : hsaCatchUpContributationAmount
+    const hsaMaxContribution = isAge55OrGreaterWithinCurrentYear(dateOfBirthString)
+      ? hsaCatchUpContributationAmount + hsaContributionLimit
+      : hsaCatchUpContributationAmount
 
     return {
       id,

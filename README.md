@@ -3,6 +3,7 @@
 Completed by:
 
 Michael Tutt
+
 tutt.michael@gmail.com
 
 ## Technologies Used
@@ -39,7 +40,7 @@ npm run dev
 
 ### Navigate browser to local endpoint
 
-Open localhost:3000 within your preferred browser (this project was tested using Chrome).
+Open http://localhost:3000 within your preferred browser (this project was tested using Chrome).
 
 ## Getting Project Production Ready
 

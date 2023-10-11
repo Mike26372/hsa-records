@@ -26,29 +26,35 @@ const hdhpMinimumDeductibleByPlanType: {
   [planTypeFamily]: 3000,
 };
 
-// Catch up contribution amount for individuals of age 55 or older.
+// Catch up contributation cutogg age.
+const hsaCatchUpContributationCutoffAge = 55;
+// Catch up contribution amount for individuals older than the cutoff age.
 const hsaCatchUpContributationAmount = 1000;
+
 
 // Calculates whether or not a person will be 55 years of age or older at any point within the current calendar year.
 function isAge55OrGreaterWithinCurrentYear(dob: string): boolean {
   // Create a date object with the target's birthday.
-  const birthDateObject = new Date(dob);
+  const birthDate = new Date(dob);
 
   // Get the current date for comparison.
   const currentDate = new Date();
 
-  // Calculate the age.
-  const age = currentDate.getFullYear() - birthDateObject.getFullYear();
+  // Create a date object for the end of the calendar year, less the cutoff age.
+  // NOTE: JavaScript date objects assume months are zero-indexed (e.g. 0 == January, 11 == December)
+  const endOfYearDateFiftyFiveYearsAgo = new Date(currentDate.getFullYear() - hsaCatchUpContributationCutoffAge, 11, 31)
 
-  // Check if the person is already 55 years of age or older, or will turn 55 during the current year.
-  return age >= 55 || currentDate.getMonth() >= birthDateObject.getMonth();
+  // If the time the target was born is before the time of the cutoff age (end of current year less the cutoff age)
+  // we can assume the target is older than 55 years old by the end of the current calendar year.
+  // NOTE: These date objects both assume time is in UTC for comparison. Since they're both using the same time zone this shouldn't be an issue.
+  return birthDate.getTime() <= endOfYearDateFiftyFiveYearsAgo.getTime()
 }
 
 // Create a formatter to format the dollar amounts.
 let USDollar = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "USD",
-  maximumSignificantDigits: 2,
+  minimumSignificantDigits: 1,
 });
 
 const columnHeaders = [
@@ -92,8 +98,8 @@ export default function HSATable({ records }: { records: EmployeeRecord[] }) {
     const hsaMaxContribution = isAge55OrGreaterWithinCurrentYear(
       dateOfBirthString,
     )
-      ? hsaCatchUpContributationAmount + hsaContributionLimit
-      : hsaCatchUpContributationAmount;
+      ? hsaContributionLimit + hsaCatchUpContributationAmount
+      : hsaContributionLimit;
 
     return {
       id,

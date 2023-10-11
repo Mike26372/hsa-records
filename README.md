@@ -59,3 +59,5 @@ Second, I would want to confirm the app is optimized for the intial page load an
 - Optimize images and set up compression (G-Zip)
 - Minify/uglify JavaScript and CSS code to reduce file size
 - Selectively choose to render only critical information on the server and load ancillary data asynchronously
+
+Lastly, I would add unit tests to confirm all components and calculations work as expected and will continue to as changes are made.

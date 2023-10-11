@@ -1,6 +1,6 @@
 # HSA Eligibility Take Home Project
 
-Completed by: 
+Completed by:
 
 Michael Tutt
 tutt.michael@gmail.com
@@ -46,14 +46,15 @@ Open localhost:3000 within your preferred browser (this project was tested using
 In order to ensure this project is more production ready there are a few follow-up tasks I would complete:
 
 First, I would make the component more modular for reuse and ensure it has the more typical suite of UI features required for properly displaying tables of data. These features could include:
+
 - Pagination that only fetches initial data and each subsequent page as you navigate
 - Allow sort and search within the table, where applicable
 - Add standard internationalization of currencies and dates based on the User's browser settings or current location
 - Mobile friendly viewing
-- Add accessibility related tags (aria-*)
+- Add accessibility related tags (aria-\*)
 
 Second, I would want to confirm the app is optimized for the intial page load and make sure user's feel they're using a high quality app that provides data quickly and effectively. A few improvments to be made that would ensure this happens:
+
 - Optimize images and set up compression (G-Zip)
 - Minify/uglify JavaScript and CSS code to reduce file size
 - Selectively choose to render only critical information on the server and load ancillary data asynchronously
-
